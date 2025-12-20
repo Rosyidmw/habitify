@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:habitify/features/home/home_screen.dart';
 import 'package:habitify/providers/habit_provider.dart';
 import 'package:habitify/providers/theme_provider.dart';
+import 'package:habitify/splash_screen.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
@@ -72,7 +72,7 @@ class MyApp extends StatelessWidget {
               elevation: 0,
             ),
           ),
-          home: HomeScreen(),
+          home: SplashScreen(),
         );
       },
     );

@@ -59,13 +59,19 @@ class _HomeScreenState extends State<HomeScreen> {
               TextField(
                 controller: _habitController,
                 autofocus: true,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
                 decoration: InputDecoration(
                   hintText: 'Contoh: Minum air 2 liter...',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
+                    borderSide: .none,
                   ),
                   filled: true,
-                  fillColor: Colors.grey[100],
+                  fillColor: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.grey[800]
+                      : Colors.grey[100],
                 ),
               ),
               SizedBox(height: 24),

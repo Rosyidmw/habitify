@@ -8,21 +8,28 @@ class StatsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
+
+    final cardColor = Theme.of(context).colorScheme.surface;
+
+    final textColor = Theme.of(context).colorScheme.onSurface;
+
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        backgroundColor: const Color(0xFFF9FAFB),
+        backgroundColor: bgColor,
         appBar: AppBar(
           title: const Text(
             'Statistik',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           centerTitle: true,
-          backgroundColor: Colors.white,
+          backgroundColor: cardColor,
           elevation: 0,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
-            color: Colors.black,
+
+            color: textColor,
             onPressed: () => Navigator.pop(context),
           ),
           bottom: const TabBar(
@@ -49,6 +56,8 @@ class _DailyView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textColor = Theme.of(context).colorScheme.onSurface;
+
     return Consumer<HabitProvider>(
       builder: (context, provider, child) {
         final totalHabits = provider.habits.length;
@@ -56,7 +65,6 @@ class _DailyView extends StatelessWidget {
             .where((h) => h.isCompleted)
             .length;
 
-        // Mencegah pembagian dengan nol
         final percentage = totalHabits == 0
             ? 0.0
             : (completedHabits / totalHabits);
@@ -68,8 +76,8 @@ class _DailyView extends StatelessWidget {
             children: [
               Container(
                 padding: const EdgeInsets.all(24),
-                decoration:
-                    _cardDecoration(), // Pastikan _cardDecoration ada di paling bawah file
+
+                decoration: _cardDecoration(context),
                 child: Column(
                   children: [
                     const Text(
@@ -78,7 +86,6 @@ class _DailyView extends StatelessWidget {
                     ),
                     const SizedBox(height: 24),
 
-                    // --- BAGIAN CHART ---
                     SizedBox(
                       height: 200,
                       child: Stack(
@@ -89,16 +96,18 @@ class _DailyView extends StatelessWidget {
                               centerSpaceRadius: 60,
                               startDegreeOffset: -90,
                               sections: [
-                                // Bagian Hijau (Selesai)
                                 PieChartSectionData(
                                   color: const Color(0xFF10B981),
                                   value: completedHabits.toDouble(),
                                   radius: 25,
                                   showTitle: false,
                                 ),
-                                // Bagian Abu (Sisa)
                                 PieChartSectionData(
-                                  color: Colors.grey[100],
+                                  color:
+                                      Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? Colors.grey[800]
+                                      : Colors.grey[100],
                                   value: (totalHabits - completedHabits)
                                       .toDouble(),
                                   radius: 25,
@@ -107,17 +116,16 @@ class _DailyView extends StatelessWidget {
                               ],
                             ),
                           ),
-                          // Teks Persentase di Tengah
                           Center(
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
                                   "$percentageText%",
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 32,
                                     fontWeight: FontWeight.bold,
-                                    color: Color(0xFF1F2937),
+                                    color: textColor,
                                   ),
                                 ),
                                 const Text(
@@ -134,10 +142,7 @@ class _DailyView extends StatelessWidget {
                       ),
                     ),
 
-                    const SizedBox(
-                      height: 32,
-                    ), // Jarak antara chart dan angka detail
-                    // --- BAGIAN DETAIL ANGKA (YANG DIKEMBALIKAN) ---
+                    const SizedBox(height: 32),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -164,7 +169,6 @@ class _DailyView extends StatelessWidget {
     );
   }
 
-  // Widget kecil untuk angka-angka di bawah chart
   Widget _buildStatItem(String label, String value, Color color) {
     return Column(
       children: [
@@ -188,6 +192,8 @@ class _WeeklyView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textColor = Theme.of(context).colorScheme.onSurface;
+
     return Consumer<HabitProvider>(
       builder: (context, provider, child) {
         final data = provider.weeklyData;
@@ -203,13 +209,17 @@ class _WeeklyView extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           child: Container(
             padding: const EdgeInsets.all(24),
-            decoration: _cardDecoration(),
+            decoration: _cardDecoration(context),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   "Performa Minggu Ini",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: textColor,
+                  ),
                 ),
                 const SizedBox(height: 30),
                 Expanded(
@@ -270,7 +280,12 @@ class _WeeklyView extends StatelessWidget {
                               backDrawRodData: BackgroundBarChartRodData(
                                 show: true,
                                 toY: maxY,
-                                color: Colors.grey[100],
+
+                                color:
+                                    Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.grey[800]
+                                    : Colors.grey[100],
                               ),
                             ),
                           ],
@@ -293,6 +308,8 @@ class _MonthlyView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textColor = Theme.of(context).colorScheme.onSurface;
+
     return Consumer<HabitProvider>(
       builder: (context, provider, child) {
         final data = provider.monthlyData;
@@ -310,13 +327,17 @@ class _MonthlyView extends StatelessWidget {
             width: 600,
             height: 400,
             padding: const EdgeInsets.all(24),
-            decoration: _cardDecoration(),
+            decoration: _cardDecoration(context),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   "Performa Bulan Ini",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: textColor,
+                  ),
                 ),
                 const SizedBox(height: 30),
                 Expanded(
@@ -366,7 +387,11 @@ class _MonthlyView extends StatelessWidget {
                               backDrawRodData: BackgroundBarChartRodData(
                                 show: true,
                                 toY: maxY,
-                                color: Colors.grey[100],
+                                color:
+                                    Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.grey[800]
+                                    : Colors.grey[100],
                               ),
                             ),
                           ],
@@ -384,13 +409,13 @@ class _MonthlyView extends StatelessWidget {
   }
 }
 
-BoxDecoration _cardDecoration() {
+BoxDecoration _cardDecoration(BuildContext context) {
   return BoxDecoration(
-    color: Colors.white,
+    color: Theme.of(context).colorScheme.surface,
     borderRadius: BorderRadius.circular(24),
     boxShadow: [
       BoxShadow(
-        color: Colors.black.withOpacity(0.03),
+        color: Colors.black.withOpacity(0.05),
         blurRadius: 15,
         offset: const Offset(0, 5),
       ),
