@@ -5,10 +5,36 @@ import 'package:habitify/providers/theme_provider.dart';
 import 'package:habitify/splash_screen.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
+import 'package:habitify/services/notification_services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('id_ID', null);
+
+  final notificationService = NotificationService();
+  await notificationService.init();
+
+  await notificationService.requestPermissions();
+
+  await notificationService.scheduleAllHabitReminders();
+
+  final DateTime now = DateTime.now();
+  final DateTime testTime = now.add(Duration(minutes: 2));
+
+  await notificationService.scheduleDailyNotification(
+    id: 999,
+    title: "Test Notifikasi",
+    body: "Halo! Ini test notifikasi",
+    hour: testTime.hour,
+    minute: testTime.minute,
+  );
+
+  print("Memulai penjadwalan..."); // Log
+  await notificationService.scheduleAllHabitReminders();
+
+  // --- DEBUG CONSOLE ---
+  // Cek apakah benar-benar sudah masuk ke sistem Android?
+  await notificationService.checkPendingNotifications();
 
   final themeProvider = ThemeProvider();
   await themeProvider.loadTheme();
